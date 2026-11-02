@@ -36,7 +36,8 @@ public class DataDBConfig {
 
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        // Hibernate 7에서는 MySQL5Dialect가 제거되었으므로 dialect는 자동 감지에 맡김
+
         em.setJpaPropertyMap(properties);
 
         return em;

@@ -1,0 +1,26 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: batch-mysql
+    restart: unless-stopped
+    labels:
+      # Spring Boot docker-compose 자동 접속정보(Service Connection) 등록 제외
+      # (DataSource를 직접 구성하고 DB가 2개라 MYSQL_DATABASE 하나로 표현 불가)
+      org.springframework.boot.ignore: "true"
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_USER: batch
+      MYSQL_PASSWORD: batch1234
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 최초 기동(빈 볼륨) 시에만 실행됨
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  mysql-data:
