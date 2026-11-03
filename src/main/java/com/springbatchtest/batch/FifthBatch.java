@@ -27,6 +27,7 @@ public class FifthBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final BeforeRepository beforeRepository;
+    private final CustomSkipPolicy customSkipPolicy;
 
 
     @Bean
@@ -47,6 +48,9 @@ public class FifthBatch {
                 .reader(fifthBeforeReader())
                 .processor(fifthProcessor())
                 .writer(excelWriter())
+                .skipPolicy(customSkipPolicy)
+                // Spring Batch 6부터 해당 메서드는 지원하지 않음.
+                // .noSkip()
                 .build();
     }
 

@@ -2,6 +2,7 @@ package com.springbatchtest.batch;
 
 import com.springbatchtest.entity.AfterEntity;
 import com.springbatchtest.repository.AfterRepository;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.batch.infrastructure.item.ItemStreamReader;
 import org.springframework.batch.infrastructure.item.data.RepositoryItemWriter;
@@ -44,7 +46,17 @@ public class FourthBatch {
                 .reader(excelReader())
                 .processor(fourthProcessor())
                 .writer(fourthAfterWriter())
+                .skipPolicy(fourthSkipPolicy())
                 .build();
+    }
+
+    @Bean
+    public SkipPolicy fourthSkipPolicy() {
+        return (t, skipCount) ->  {
+            if (t instanceof FileNotFoundException) return false;
+            if (t instanceof IOException) return skipCount < 10;
+            return true;
+        };
     }
 
     public ItemStreamReader<Row> excelReader() {
