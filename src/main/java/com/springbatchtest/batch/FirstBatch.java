@@ -5,11 +5,15 @@ import com.springbatchtest.entity.BeforeEntity;
 import com.springbatchtest.repository.AfterRepository;
 import com.springbatchtest.repository.BeforeRepository;
 import java.util.Map;
+import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.listener.StepExecutionListener;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
+import org.springframework.batch.core.step.StepExecution;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.batch.infrastructure.item.data.RepositoryItemReader;
@@ -50,6 +54,7 @@ public class FirstBatch {
                 .reader(beforeReader())
                 .processor(middleProcessor())
                 .writer(afterWriter())
+                .listener(stepExecutionListener())
                 .build();
     }
 
@@ -85,5 +90,23 @@ public class FirstBatch {
                 .repository(afterRepository)
                 .methodName("save")
                 .build();
+    }
+
+
+    @Bean
+    public StepExecutionListener stepExecutionListener() {
+        return new StepExecutionListener() {
+            @Override
+            public void beforeStep(StepExecution stepExecution) {
+                System.out.println("before step");
+                StepExecutionListener.super.beforeStep(stepExecution);
+            }
+
+            @Override
+            public @Nullable ExitStatus afterStep(StepExecution stepExecution) {
+                System.out.println("after step");
+                return StepExecutionListener.super.afterStep(stepExecution);
+            }
+        };
     }
 }
