@@ -40,4 +40,16 @@ public class MainController {
 
         return "ok";
     }
+
+    @GetMapping("/fourthJob")
+    public String forthApi(@RequestParam("value") String value) throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", value)
+                .toJobParameters();
+
+        jobOperator.start(jobRegistry.getJob("fourthJob"), jobParameters);
+
+        return "ok";
+    }
 }
