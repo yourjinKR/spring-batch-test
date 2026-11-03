@@ -41,7 +41,7 @@ public class MainController {
         return "ok";
     }
 
-    @GetMapping("/fourthJob")
+    @GetMapping("/fourth")
     public String forthApi(@RequestParam("value") String value) throws Exception {
 
         JobParameters jobParameters = new JobParametersBuilder()
@@ -50,6 +50,17 @@ public class MainController {
 
         jobOperator.start(jobRegistry.getJob("fourthJob"), jobParameters);
 
+        return "ok";
+    }
+
+    @GetMapping("/fifth")
+    public String fifthApi(@RequestParam("value") String value) throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", value)
+                .toJobParameters();
+
+        jobOperator.start(jobRegistry.getJob("fifthJob"), jobParameters);
         return "ok";
     }
 }
