@@ -39,8 +39,13 @@ public class FirstBatch {
     @Bean
     public Job firstJob() {
         System.out.println("first job");
+        Step firstStep = firstStep();
         return new JobBuilder("firstJob", jobRepository)
-                .start(firstStep())
+                .start(firstStep)
+                .on("*").to(anywayStep())
+                .from(failStep()).on(ExitStatus.COMPLETED.getExitCode()).to(failStep())
+                .from(firstStep).on(ExitStatus.FAILED.getExitCode()).to(completeStep())
+                .end()
                 .build();
     }
 
@@ -56,6 +61,21 @@ public class FirstBatch {
                 .writer(afterWriter())
                 .listener(stepExecutionListener())
                 .build();
+    }
+
+    @Bean
+    public Step anywayStep() {
+        return stepExecution -> System.out.println("anywayStep");
+    }
+
+    @Bean
+    public Step completeStep() {
+        return stepExecution -> System.out.println("complete step");
+    }
+
+    @Bean
+    public Step failStep() {
+        return stepExecution -> System.out.println("fail step");
     }
 
     // BeforeEntity 테이블에서 읽어오는 Reader
