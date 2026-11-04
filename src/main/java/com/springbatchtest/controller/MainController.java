@@ -63,4 +63,15 @@ public class MainController {
         jobOperator.start(jobRegistry.getJob("fifthJob"), jobParameters);
         return "ok";
     }
+
+    @GetMapping("/sixth")
+    public String sixthApi(@RequestParam("value") String value) throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", value)
+                .toJobParameters();
+
+        jobOperator.start(jobRegistry.getJob("sixthJob"), jobParameters);
+        return "ok";
+    }
 }
